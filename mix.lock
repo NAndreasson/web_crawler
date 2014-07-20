@@ -1,2 +1,4 @@
-%{"mochiweb": {:git, "git://github.com/mochi/mochiweb.git", "925a7837ebe500bbfc2698a72340d2b2e58cd5df", [ref: "HEAD"]},
+%{"httpotion": {:git, "git://github.com/myfreeweb/httpotion.git", "a6bcbbac7b6f15ee93c5c941de36d59ef8c85743", []},
+  "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "7871e2ebe8811efb64e1917e2de455fa87e8dfe3", [tag: "v4.1.0"]},
+  "mochiweb": {:git, "git://github.com/mochi/mochiweb.git", "925a7837ebe500bbfc2698a72340d2b2e58cd5df", [ref: "HEAD"]},
   "mochiweb_xpath": {:git, "git://github.com/retnuh/mochiweb_xpath.git", "ccea7319e88281f6274b6fce617278c434bac56f", []}}

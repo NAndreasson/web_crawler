@@ -1,27 +1,25 @@
 defmodule UrlCrawlerTest do
 	use ExUnit.Case
 
-	import Crawler.UrlCrawler, only: [ extract_hrefs: 1 ]
+	import Crawler.UrlCrawler, only: [ crawl_url: 1, format_hrefs: 2 ]
 
-	def sample_xml do
-		"""
-		<html>
-			<head>
-				<title>Test page</title>
-			</head>
-			<body>
-				<h1>Test</h1>
-				<a href="facebook.com">Link</a>
-				<p>Testing</p>
-				<img src="img.jpg" alt="" />
-				<a href="meck.html" class="link">Link</a>
-			</body>
-		</html>
-		"""
+	# test "fetching a site" do
+	# 	# response = HTTPotion.get("http://erlang.org")
+	# 	# assert response.body == true
+	# 	hrefs = crawl_url("http://nandreasson.se")
+	# 	assert hrefs == ["facebook.com"]
+	# end
+
+	test "format hrefs" do
+		hrefs = [ "/test", "http://facebook.com"]
+
+		formatted_hrefs = format_hrefs("http://nandreasson.se", hrefs)
+		assert formatted_hrefs == ["http://nandreasson.se/test", "http://facebook.com"]
 	end
 
-	test "parsing the title out" do
-		results = extract_hrefs(sample_xml)
-		assert results == ["facebook.com", "meck.html"]
+	test "fetch and stuff" do
+		hrefs = crawl_url("http://nandreasson.se")	
+
+		assert hrefs == []
 	end
 end

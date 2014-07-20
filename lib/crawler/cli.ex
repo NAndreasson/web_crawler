@@ -7,7 +7,9 @@ defmodule Crawler.CLI do
 	"""
 
 	def run(argv) do
-		parse_args(argv)
+		argv
+			|> parse_args
+			|> process
 	end
 
 	@doc """
@@ -32,6 +34,17 @@ defmodule Crawler.CLI do
 
 			_ -> :help
 		end
+	end
+
+	def process(:help) do
+		IO.puts """
+		 usage: <url> [count]
+		"""
+		System.halt(0)
+	end
+
+	def process({url, count}) do
+		Crawler.Scheduler.run(url)
 	end
 
 end
