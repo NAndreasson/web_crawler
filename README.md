@@ -1,4 +1,4 @@
 WebCrawler
 ==========
 
-** TODO: Add description **
+WIP Web crawler in Elixir
