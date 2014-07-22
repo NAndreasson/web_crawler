@@ -5,12 +5,6 @@ defmodule Crawler.Scheduler do
 		(1..3)
 			|> Enum.map(fn(_) -> spawn(Crawler.UrlCrawler, :greet, [ self ]) end)
 			|> schedule_jobs([], [url], [], 6) # we want to crawl 6 pagess?
-		# spawn a crawler process
-
-		# we want to assign a job to the first
-
-		# when we have the results we want them to be crawler
-
 	end
 
 	def schedule_jobs(processes, waiting_for_work, urls_to_crawl, urls_crawled, nr_left_to_crawl) do
@@ -52,8 +46,19 @@ defmodule Crawler.Scheduler do
 			
 			# a crawler is done
 			{:answer, hrefs} ->
-				# add the hrefs to be craweled
-				schedule_jobs(processes, waiting_for_work, hrefs ++ urls_to_crawl, urls_crawled, nr_left_to_crawl)
+				# remove hrefs that are already waiting to be crawled or has already been crawled before adding to que
+				not_already_crawled = hrefs -- urls_crawled
+				not_waiting_to_be_crawled = hrefs -- urls_to_crawl
+				not_crawled_or_waiting_to_be_crawled = not_already_crawled ++ not_waiting_to_be_crawled	
+
+				to_crawl = not_crawled_or_waiting_to_be_crawled -- Enum.uniq(not_crawled_or_waiting_to_be_crawled)
+				IO.puts "Already crawled"
+				IO.puts urls_crawled
+
+				IO.puts "UNIQUE"
+				IO.inspect not_crawled_or_waiting_to_be_crawled
+
+				schedule_jobs(processes, waiting_for_work, not_crawled_or_waiting_to_be_crawled, urls_crawled, nr_left_to_crawl)
 
 
 		end

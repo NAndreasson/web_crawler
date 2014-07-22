@@ -16,28 +16,80 @@ defmodule Crawler.UrlCrawler do
 
 	def crawl_url(url) do
 		IO.puts "Crawling " <> url
-		
+
 		html = fetch_url(url)
+
 		hrefs = extract_hrefs(html)
 
-		formatted_hrefs = format_hrefs(url, hrefs)
+		filtered_hrefs = filter_hrefs(hrefs)
+
+		formatted_hrefs = format_hrefs(url, filtered_hrefs)
 		# remove duplicates
 		Enum.uniq(formatted_hrefs)
 	end
 
 	def fetch_url(url) do
+		HTTPotion.start
 		response = HTTPotion.get(url)
-		response.body
+
+		status_code = response.status_code	
+		IO.puts url
+		IO.puts status_code
+
+		if status_code == 301 do
+			{:Location, redirect_path} = List.keyfind(response.headers, :Location, 0)
+			fqdn = extract_fqdn(url)
+			fetch_url( fqdn <> redirect_path )
+		else
+			response.body
+		end
+
 	end
 
-	def format_hrefs(baseurl, hrefs) do
-		formatted_hrefs = Enum.map(hrefs, fn(href) -> 
-			is_relative_url = String.starts_with? href, ["/"]
+	defp extract_fqdn(url) do
+		#name could be http://nandreasson.se, nandreasson.se/ or nandreasson.se/about
+		# we only want the http://nandreasson.se
+		[procotocol, _, site_name | _] = String.split url, "/"
+		fqdn = procotocol <> "//" <> site_name
+	end
 
-			if is_relative_url do
-				formatted_href = baseurl <> href
-			else
-				formatted_href = href
+	def filter_hrefs(hrefs) do
+		Enum.filter(hrefs, fn(href) ->
+
+			starts_with_hash = String.starts_with? href, ["#"]
+			empty = String.length( String.strip( href ) ) == 0
+
+			cond do
+				starts_with_hash == true ->
+					false
+
+				empty == true ->
+					false
+
+				true ->
+					true
+			end
+		end)	
+	end
+
+	def format_hrefs(visited_url, found_hrefs) do
+		formatted_hrefs = Enum.map(found_hrefs, fn(href) -> 
+			is_root_url = (String.length href) == 1 && String.starts_with? href, ["/"]
+			is_relative_url = (String.length href) > 1 && String.starts_with? href, ["/"]
+
+			IO.puts visited_url
+			fqdn = extract_fqdn(visited_url)
+
+			cond do
+				is_root_url == true ->
+					formatted_href = fqdn <> "/" 
+
+				is_relative_url == true ->
+					# not sure if good name
+					formatted_href =  fqdn <> href
+
+				true ->
+					formatted_href = href
 			end
 
 			formatted_href
