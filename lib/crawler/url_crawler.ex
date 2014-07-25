@@ -77,6 +77,9 @@ defmodule Crawler.UrlCrawler do
 			is_root_url = (String.length href) == 1 && String.starts_with? href, ["/"]
 			is_relative_url = (String.length href) > 1 && String.starts_with? href, ["/"]
 
+			# if it doesnt start with either .. www, http or https?
+			is_local_url =  !String.starts_with? href, ["www", "http"]
+
 			IO.puts visited_url
 			fqdn = extract_fqdn(visited_url)
 
@@ -87,6 +90,9 @@ defmodule Crawler.UrlCrawler do
 				is_relative_url == true ->
 					# not sure if good name
 					formatted_href =  fqdn <> href
+
+				is_local_url == true ->
+					formatted_href = fqdn <> "/" <> href
 
 				true ->
 					formatted_href = href
