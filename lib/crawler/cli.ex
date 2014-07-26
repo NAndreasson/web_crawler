@@ -44,7 +44,8 @@ defmodule Crawler.CLI do
 	end
 
 	def process({url, count}) do
-		Crawler.Scheduler.run(url)
+		IO.puts count
+		Crawler.Scheduler.run(url, count)
 	end
 
 end

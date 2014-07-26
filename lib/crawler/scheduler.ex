@@ -1,10 +1,10 @@
 defmodule Crawler.Scheduler do
 
-	def run(url) do
+	def run(url, count) do
 		# spawn 3 crawlers
 		(1..3)
 			|> Enum.map(fn(_) -> spawn(Crawler.UrlCrawler, :greet, [ self ]) end)
-			|> schedule_jobs([], [url], [], 6) # we want to crawl 6 pagess?
+			|> schedule_jobs([], [url], [], count) # we want to crawl 6 pagess?
 	end
 
 	def schedule_jobs(processes, waiting_for_work, urls_to_crawl, urls_crawled, nr_left_to_crawl) do
