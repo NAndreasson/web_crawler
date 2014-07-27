@@ -10,6 +10,7 @@ defmodule Crawler.UrlCrawler do
 				greet(scheduler_pid)
 
 			{ :shutdown } -> 
+				IO.puts "Out of business!"
 				exit(:normal)
 		end
 	end

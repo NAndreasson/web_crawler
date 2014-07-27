@@ -44,8 +44,9 @@ defmodule Crawler.CLI do
 	end
 
 	def process({url, count}) do
-		IO.puts count
-		Crawler.Scheduler.run(url, count)
+		{time, result} = :timer.tc(Crawler.Scheduler, :run, [url, count])
+		IO.puts "Done in"
+		IO.puts time
 	end
 
 end

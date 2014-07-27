@@ -14,6 +14,8 @@ defmodule Crawler.Scheduler do
 			[ waiting_process | rem_waiting_for_work ] = waiting_for_work
 			[ next_url | rem_urls ] = urls_to_crawl
 
+			IO.puts "Telling things to crawl things"
+
 			send waiting_process, {:crawl, next_url, self}
 
 			schedule_jobs(processes, rem_waiting_for_work, rem_urls, [ next_url | urls_crawled ], nr_left_to_crawl - 1)
@@ -60,7 +62,9 @@ defmodule Crawler.Scheduler do
 
 				schedule_jobs(processes, waiting_for_work, not_crawled_or_waiting_to_be_crawled, urls_crawled, nr_left_to_crawl)
 
-
+			after 1000 ->
+				IO.puts "Timeout"
+				urls_to_crawl
 		end
 
 	end
