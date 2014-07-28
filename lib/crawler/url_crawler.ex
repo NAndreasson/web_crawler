@@ -6,7 +6,7 @@ defmodule Crawler.UrlCrawler do
 		send scheduler_pid, { :ready, self }
 		receive do
 			{ :crawl, url, client } ->
-				send client, { :answer, crawl_url(url) }
+				send client, { :answer, url, crawl_url(url) }
 				greet(scheduler_pid)
 
 			{ :shutdown } -> 

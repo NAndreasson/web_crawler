@@ -44,24 +44,40 @@ defmodule Crawler.CLI do
 	end
 
 	def process({url, count}) do
-		{time, results} = :timer.tc(Crawler.Scheduler, :run, [url, count])
+		{time, results_map} = :timer.tc(Crawler.Scheduler, :run, [url, count])
 		IO.puts "Done in"
 		IO.puts time
 
-		save_results_to_file(results)
+		save_results_to_file(results_map)
 	end
 
-	defp save_results_to_file(results) do
+	defp save_results_to_file(results_map) do
 		# get formatted time eg 2014_04_28_084339
 		current_time = format_current_time()
 
 		{:ok, file} = File.open "results_" <> current_time, [:write]
 
-		IO.binwrite file, "Found urls (not crawled)\n\n"
+		IO.binwrite file, "Results from crawl starting at meck\n\n"
 
-		Enum.each(results, fn(result) -> 
-			IO.binwrite file, result <> "\n"
+		# get keys - which are crawled urls, remove :start atom though
+		crawled_urls = Dict.keys( Dict.delete(results_map, :start) )
+
+		Enum.each(crawled_urls, fn(crawled_url) ->
+			IO.binwrite file, "From: " <> crawled_url <> "\n"
+
+			urls_found_at_crawled_url = Dict.get(results_map, crawled_url)
+
+			Enum.each(urls_found_at_crawled_url, fn(found_url) -> 
+				IO.binwrite file, "- " <> found_url <> "\n"
+			end)
+
 		end)
+
+		# # for each key print values
+
+		# Enum.each(results, fn(result) -> 
+		# 	IO.binwrite file, result <> "\n"
+		# end)
 
 		File.close file
 	end
