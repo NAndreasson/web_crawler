@@ -44,9 +44,32 @@ defmodule Crawler.CLI do
 	end
 
 	def process({url, count}) do
-		{time, result} = :timer.tc(Crawler.Scheduler, :run, [url, count])
+		{time, results} = :timer.tc(Crawler.Scheduler, :run, [url, count])
 		IO.puts "Done in"
 		IO.puts time
+
+		save_results_to_file(results)
+	end
+
+	defp save_results_to_file(results) do
+		# get formatted time eg 2014_04_28_084339
+		current_time = format_current_time()
+
+		{:ok, file} = File.open "results_" <> current_time, [:write]
+
+		IO.binwrite file, "Found urls (not crawled)\n\n"
+
+		Enum.each(results, fn(result) -> 
+			IO.binwrite file, result <> "\n"
+		end)
+
+		File.close file
+	end
+
+	defp format_current_time() do
+		time = Timex.Date.now()
+
+		Timex.DateFormat.format!(time, "{YYYY}_{0M}_{0D}_{0h24}{0m}{0s}")
 	end
 
 end

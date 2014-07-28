@@ -12,7 +12,7 @@ defmodule WebCrawler.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [ :mochiweb_xpath, :httpotion ]]
+    [applications: [ :mochiweb_xpath, :httpotion, :timex ]]
   end
 
   # Dependencies can be hex.pm packages:
@@ -27,7 +27,8 @@ defmodule WebCrawler.Mixfile do
   defp deps do
     [
       { :mochiweb_xpath, github: "retnuh/mochiweb_xpath" },
-      { :httpotion, github: "myfreeweb/httpotion" }
+      { :httpotion, github: "myfreeweb/httpotion" },
+      { :timex, github: "bitwalker/timex"}
     ]
   end
 end
