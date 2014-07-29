@@ -78,13 +78,7 @@ defmodule Crawler.Scheduler do
 
 	defp assign_work_to_waiting_processes(waiting_for_work, crawl_map, nr_left_to_crawl) do
 		not_yet_crawled = find_not_yet_crawled(crawl_map)
-		# get next pid, and then a url
-
-		# add to crawl map and recurse
-
-		#if we don't have any more processes waiting for work or no more to crawl then return
-				# if waiting for work, we have urls to crawl and things to crawl...
-
+		
 		if length(waiting_for_work) > 0 and length(not_yet_crawled) > 0 and nr_left_to_crawl > 0 do
 			[ waiting_process | rem_waiting_for_work ] = waiting_for_work
 			[ next_url | rem_urls ] = not_yet_crawled 
