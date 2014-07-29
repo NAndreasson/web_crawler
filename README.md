@@ -1,4 +1,4 @@
 WebCrawler
 ==========
 
-WIP Web crawler in Elixir
+Web crawler in Elixir
