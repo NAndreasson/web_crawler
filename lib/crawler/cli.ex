@@ -1,6 +1,7 @@
 defmodule Crawler.CLI do
 
 	@default_count 10
+	@default_crawlers 3
 
 	@moduledoc """
 	Handle the parsing of commands and the dispatching to the crawler		
@@ -27,10 +28,13 @@ defmodule Crawler.CLI do
 				:help
 
 			{ _, [ url, count ], _ } ->
-				{ url, String.to_integer(count) }
+				{ url, String.to_integer(count), @default_crawlers }
+
+			{ _, [ url, count, crawlers ], _ } ->
+				{ url, String.to_integer(count), String.to_integer(crawlers) }
 
 			{ _, [ url ], _ } ->
-				{ url, @default_count }
+				{ url, @default_count, @default_crawlers }
 
 			_ -> :help
 		end
@@ -38,15 +42,15 @@ defmodule Crawler.CLI do
 
 	def process(:help) do
 		IO.puts """
-		 usage: <url> [count]
+		 usage: <url> [count] [crawlers]
 		"""
 		System.halt(0)
 	end
 
-	def process({url, count}) do
-		{time, results_map} = :timer.tc(Crawler.Scheduler, :run, [url, count])
-		IO.puts "Done in"
-		IO.puts time
+	def process({url, count, crawlers}) do
+		{time, results_map} = :timer.tc(Crawler.Scheduler, :run, [url, count, crawlers])
+		
+		:io.format "Done in ~.2f seconds", [time/1000000.0]
 
 		save_results_to_file(results_map)
 	end
